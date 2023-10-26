@@ -41,7 +41,7 @@ def run_game() :
 
     state = STATE_IDLE
     board.clear()
-    
+
     block = block_object(board.rows, board.cols)
 
     tick = 0
@@ -58,6 +58,8 @@ def run_game() :
                     if block.move_down(board) == False :
                         board.fill_block(block)
                         block = block_object(board.rows, board.cols)
+                        if block.check_gameover(board) == True :
+                            edit_exit = True
                         state = STATE_CHECK_ALL
                 elif event.key == pygame.K_LEFT :
                     block.move_left(board) 
@@ -79,7 +81,8 @@ def run_game() :
             state = STATE_MOVE_DOWN
         elif state == STATE_MOVE_DOWN :
             # move down block
-            board.move_down()
+            # board.move_down()
+            board.move_down_all(remove_rows)
             state = STATE_CHECK_ALL
 
         tick += 1
@@ -87,6 +90,8 @@ def run_game() :
             if block.move_down(board) == False :
                 board.fill_block(block)
                 block = block_object(board.rows, board.cols)
+                if block.check_gameover(board) == True :
+                    edit_exit = True
                 state = STATE_CHECK_ALL
             tick = 0
 
@@ -97,10 +102,13 @@ def run_game() :
         board.draw()
 
         # Draw block
-        block.draw(board)
+        if edit_exit == False :
+            block.draw(board)
 
         pygame.display.update()
         clock.tick(60)
+
+    draw_message('Game Over')
 
 def test_game() :
     global clock

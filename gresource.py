@@ -11,6 +11,7 @@ COLOR_GREEN = (0, 255, 0)
 COLOR_YELLOW = (255, 255, 0)
 COLOR_ORANGE = (255, 165, 0)
 COLOR_MAGENTA = (255, 0, 255)
+COLOR_PURPLE = (128, 0, 128)
 
 resource_path = ''
 

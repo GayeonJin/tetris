@@ -31,14 +31,15 @@ block_data = [
     [1, 0, [(0, 0), (1, 0), (2, 0), (2, 1)], COLOR_YELLOW],
     [1, 0, [(0, 1), (0, 0), (1, 0), (2, 0)], COLOR_ORANGE],
     [1, 0, [(0, 0), (1, 0), (1, 1), (2, 1)], COLOR_GREEN],
-    [1, 0, [(0, 1), (1, 1), (1, 0), (2, 0)], COLOR_MAGENTA],                    
+    [1, 0, [(0, 1), (1, 1), (1, 0), (2, 0)], COLOR_MAGENTA],
+    [1, 0, [(0, 1), (1, 1), (2, 1), (1, 0)], COLOR_PURPLE],                        
 ]
 
 class block_object :
     def __init__(self, rows, cols) :
         self.datum = []
         
-        id = random.randrange(0, 6)
+        id = random.randrange(0, len(block_data))
         self.center_x = block_data[id][0]
         self.center_y = block_data[id][1]
         for (x, y) in block_data[id][2] :
@@ -123,6 +124,9 @@ class block_object :
         
         self.center_y += 1        
         return True
+
+    def check_gameover(self, board) :
+        return self.check_conflict(self.datum, board)
 
     def check_conflict(self, datum, board) :
         conflict = False
@@ -241,6 +245,12 @@ class game_board :
             for x in range(self.cols) :
                 self.map[x][row] = 0
        
+    def move_down_all(self, rows) :
+        for row in rows :
+            for y in range(row, 0, -1) :
+                for x in range(self.cols) :
+                    self.map[x][y] = self.map[x][y-1]
+
     def move_down(self) :
         for x in range(self.cols) :        
             empty_y = []
