@@ -71,16 +71,6 @@ def run_game() :
                 elif event.key == pygame.K_x :
                     return
 
-        if block_down == True :
-            if block.move_down(board) == False:
-                block_down = False
-                
-                board.fill_block(block)
-                block = block_object(board.rows, board.cols)
-                if block.check_gameover(board) == True :
-                    edit_exit = True
-                state = STATE_CHECK_ALL
-
         if state == STATE_CHECK_ALL :
             # clear item and make effect
             remove_rows = board.check_full()
@@ -99,8 +89,10 @@ def run_game() :
             state = STATE_CHECK_ALL
 
         tick += 1
-        if tick > DOWN_SPEED :
+        if tick > DOWN_SPEED or block_down == True:
             if block.move_down(board) == False :
+                block_down = False
+
                 board.fill_block(block)
                 block = block_object(board.rows, board.cols)
                 if block.check_gameover(board) == True :
