@@ -8,7 +8,6 @@ import random
 from time import sleep
 
 from gresource import *
-from gobject import *
 
 from board import *
 
@@ -21,13 +20,21 @@ STATE_MOVE_DOWN = 3
 
 DOWN_SPEED = 20
 
+def draw_score(score) :
+    font = pygame.font.Font('freesansbold.ttf', 20)
+    text_suf = font.render('Score : %d'%score, True, COLOR_BLACK)
+    text_rect = text_suf.get_rect()
+    text_rect.left = BOARD_XOFFSET
+    text_rect.top = 5
+    gctrl.surface.blit(text_suf, text_rect)
+
 def draw_message(str) :
     font = pygame.font.Font('freesansbold.ttf', 40)
     text_suf = font.render(str, True, COLOR_BLACK)
     text_rect = text_suf.get_rect()
-    text_rect.center = ((gctrl.pad_width / 2), (gctrl.pad_height / 2))
+    text_rect.center = ((gctrl.width / 2), (gctrl.height / 2))
 
-    gctrl.gamepad.blit(text_suf, text_rect)
+    gctrl.surface.blit(text_suf, text_rect)
     pygame.display.update()
     sleep(2)
 
@@ -45,6 +52,7 @@ def run_game() :
     block = block_object(board.rows, board.cols)
 
     tick = 0
+    block_down = False
     edit_exit = False
     while not edit_exit :
         for event in pygame.event.get() :
@@ -55,18 +63,23 @@ def run_game() :
                 if event.key == pygame.K_UP :
                     block.rotate_right(board)
                 if event.key == pygame.K_DOWN :
-                    if block.move_down(board) == False :
-                        board.fill_block(block)
-                        block = block_object(board.rows, board.cols)
-                        if block.check_gameover(board) == True :
-                            edit_exit = True
-                        state = STATE_CHECK_ALL
+                    block_down = True
                 elif event.key == pygame.K_LEFT :
                     block.move_left(board) 
                 elif event.key == pygame.K_RIGHT :
                         block.move_right(board) 
                 elif event.key == pygame.K_x :
                     return
+
+        if block_down == True :
+            if block.move_down(board) == False:
+                block_down = False
+                
+                board.fill_block(block)
+                block = block_object(board.rows, board.cols)
+                if block.check_gameover(board) == True :
+                    edit_exit = True
+                state = STATE_CHECK_ALL
 
         if state == STATE_CHECK_ALL :
             # clear item and make effect
@@ -96,7 +109,7 @@ def run_game() :
             tick = 0
 
         # Clear gamepad
-        gctrl.gamepad.fill(COLOR_WHITE)
+        gctrl.surface.fill(COLOR_WHITE)
 
         # Draw board
         board.draw()
@@ -104,6 +117,9 @@ def run_game() :
         # Draw block
         if edit_exit == False :
             block.draw(board)
+
+        # Draw Score
+        draw_score(board.score)
 
         pygame.display.update()
         clock.tick(60)
@@ -164,7 +180,7 @@ def test_game() :
             tick = 0
 
         # Clear gamepad
-        gctrl.gamepad.fill(COLOR_WHITE)
+        gctrl.surface.fill(COLOR_WHITE)
 
         # Draw board
         board.draw()
@@ -177,13 +193,13 @@ def test_game() :
 
 def start_game() :
     # Clear gamepad
-    gctrl.gamepad.fill(COLOR_WHITE)
+    gctrl.surface.fill(COLOR_WHITE)
 
     font = pygame.font.Font('freesansbold.ttf', 20)
     text_suf = font.render(TITLE_STR, True, COLOR_BLACK)
     text_rect = text_suf.get_rect()
-    text_rect.center = ((gctrl.pad_width / 2), (gctrl.pad_height / 2))
-    gctrl.gamepad.blit(text_suf, text_rect)
+    text_rect.center = ((gctrl.width / 2), (gctrl.height / 2))
+    gctrl.surface.blit(text_suf, text_rect)
 
     help_str = ['r : run game',
                 't : test game',
@@ -194,8 +210,8 @@ def start_game() :
         text_suf1 = font1.render(help, True, COLOR_BLUE)
         text_rect1 = text_suf1.get_rect()
         text_rect1.top = text_rect.bottom + 50 + i * 25
-        text_rect1.centerx = gctrl.pad_width / 2
-        gctrl.gamepad.blit(text_suf1, text_rect1)
+        text_rect1.centerx = gctrl.width / 2
+        gctrl.surface.blit(text_suf1, text_rect1)
 
     while True :
         for event in pygame.event.get():
@@ -225,7 +241,7 @@ def init_game() :
     board = game_board(MAX_ROWS, MAX_COLS)
 
     (pad_width, pad_height) = board.get_padsize()
-    gctrl.set_param(pygame.display.set_mode((pad_width, pad_height)), pad_width, pad_height)
+    gctrl.set_surface(pygame.display.set_mode((pad_width, pad_height)))
     pygame.display.set_caption(TITLE_STR)
 
 if __name__ == '__main__' :

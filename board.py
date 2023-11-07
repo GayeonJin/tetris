@@ -6,7 +6,6 @@ import pygame
 import random
 
 from gresource import *
-from gobject import *
 
 MAX_ROWS = 20
 MAX_COLS = 12
@@ -152,8 +151,8 @@ class block_object :
         for i, (x, y) in enumerate(self.datum) :        
             if x != -1 and y != -1 :
                 rect = board.get_map_rect(x, y)
-                pygame.draw.rect(gctrl.gamepad, self.color, rect, 0, 1)
-                pygame.draw.rect(gctrl.gamepad, COLOR_WHITE, rect, 1, 1)
+                pygame.draw.rect(gctrl.surface, self.color, rect, 0, 1)
+                pygame.draw.rect(gctrl.surface, COLOR_WHITE, rect, 1, 1)
 
 class game_board :
     def __init__(self, rows, cols) :
@@ -244,6 +243,8 @@ class game_board :
         for row in rows :
             for x in range(self.cols) :
                 self.map[x][row] = 0
+                
+            self.score += 10
        
     def move_down_all(self, rows) :
         for row in rows :
@@ -271,11 +272,11 @@ class game_board :
         for y in range(self.rows) :
             for x in range(self.cols) :
                 if self.map[x][y] != 0 :
-                    pygame.draw.rect(gctrl.gamepad, self.map[x][y], rect, 0, 1)
+                    pygame.draw.rect(gctrl.surface, self.map[x][y], rect, 0, 1)
                 else :
-                    pygame.draw.rect(gctrl.gamepad, COLOR_GRAY, rect, 0, 1)
+                    pygame.draw.rect(gctrl.surface, COLOR_GRAY, rect, 0, 1)
                 
-                pygame.draw.rect(gctrl.gamepad, COLOR_WHITE, rect, 1, 1)
+                pygame.draw.rect(gctrl.surface, COLOR_WHITE, rect, 1, 1)
 
                 rect.x += self.obj_width
             rect.y += self.obj_height
