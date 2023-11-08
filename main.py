@@ -67,7 +67,9 @@ def run_game() :
                 elif event.key == pygame.K_LEFT :
                     block.move_left(board) 
                 elif event.key == pygame.K_RIGHT :
-                        block.move_right(board) 
+                    block.move_right(board)
+                elif event.key == pygame.K_F10 :
+                    gctrl.save_scr_capture(TITLE_STR)
                 elif event.key == pygame.K_x :
                     return
 

@@ -45,7 +45,7 @@ class game_ctrl :
         self.height = surface.get_height()
 
     def save_scr_capture(self, prefix) :
-        pygame.image.save(self.gamepad,(prefix + time.strftime('%Y%m%d%H%M%S')+ '.jpg'))
+        pygame.image.save(self.surface,(prefix + time.strftime('%Y%m%d%H%M%S')+ '.jpg'))
 
 gctrl = game_ctrl()
 
