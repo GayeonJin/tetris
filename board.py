@@ -48,9 +48,7 @@ class block_object :
         self.rows = rows
         self.cols = cols
 
-        # move center
-        x = int(self.cols / 2 - self.center_x)
-        self.move_right(None, x) 
+        self.move_ready() 
 
     def rotate_right(self, board) :
         next_block = []
@@ -72,6 +70,15 @@ class block_object :
             return False
       
         return True
+
+    def move_ready(self) :
+        x = self.cols + 1
+        self.move_right(None, x)
+
+    def move_start(self) :
+        # move center
+        x = int(self.cols / 2 - self.center_x)
+        self.move_right(None, x) 
 
     def move_left(self, board, movement = 1) :
         next_block = []
@@ -206,7 +213,7 @@ class game_board :
         return (None, None)
 
     def get_map_rect(self, x, y) :
-        rect = pygame.Rect(self.x_offset, self.y_offset, self.obj_width , self.obj_height)
+        rect = pygame.Rect(self.x_offset, self.y_offset, self.obj_width, self.obj_height)
 
         # map[0][0] is left and top
         rect.x += x * self.obj_width

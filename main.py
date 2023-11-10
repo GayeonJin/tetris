@@ -20,6 +20,8 @@ STATE_MOVE_DOWN = 3
 
 DOWN_SPEED = 20
 
+NEXT_BLOCK_WIDTH = 30*5
+
 def draw_score(score) :
     font = pygame.font.Font('freesansbold.ttf', 20)
     text_suf = font.render('Score : %d'%score, True, COLOR_BLACK)
@@ -50,14 +52,16 @@ def run_game() :
     board.clear()
 
     block = block_object(board.rows, board.cols)
+    block.move_start()
+    next_block = block_object(board.rows, board.cols)
 
     tick = 0
     block_down = False
-    edit_exit = False
-    while not edit_exit :
+    game_exit = False
+    while not game_exit :
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
-                edit_exit = True
+                game_exit = True
 
             if event.type == pygame.KEYUP :
                 if event.key == pygame.K_UP :
@@ -96,9 +100,11 @@ def run_game() :
                 block_down = False
 
                 board.fill_block(block)
-                block = block_object(board.rows, board.cols)
+                block = next_block
+                block.move_start()
+                next_block = block_object(board.rows, board.cols)
                 if block.check_gameover(board) == True :
-                    edit_exit = True
+                    game_exit = True
                 state = STATE_CHECK_ALL
             tick = 0
 
@@ -109,8 +115,9 @@ def run_game() :
         board.draw()
 
         # Draw block
-        if edit_exit == False :
+        if game_exit == False :
             block.draw(board)
+            next_block.draw(board)
 
         # Draw Score
         draw_score(board.score)
@@ -126,13 +133,14 @@ def test_game() :
 
     state = STATE_IDLE
     block = block_object(board.rows, board.cols)
+    block.move_start()
 
     tick = 0
-    edit_exit = False
-    while not edit_exit :
+    game_exit = False
+    while not game_exit :
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
-                edit_exit = True
+                game_exit = True
 
             if event.type == pygame.KEYUP :
                 if event.key == pygame.K_UP :
@@ -144,7 +152,7 @@ def test_game() :
                 elif event.key == pygame.K_LEFT :
                     block.move_left(board) 
                 elif event.key == pygame.K_RIGHT :
-                        block.move_right(board) 
+                    block.move_right(board) 
                 elif event.key == pygame.K_1 :
                     state = STATE_CHECK_ALL
                 elif event.key == pygame.K_2 :
@@ -171,6 +179,7 @@ def test_game() :
             if block.move_down(board) == False :
                 board.fill_block(block)
                 block = block_object(board.rows, board.cols)
+                block.move_start()
             tick = 0
 
         # Clear gamepad
@@ -235,6 +244,8 @@ def init_game() :
     board = game_board(MAX_ROWS, MAX_COLS)
 
     (pad_width, pad_height) = board.get_padsize()
+    pad_width += NEXT_BLOCK_WIDTH
+
     gctrl.set_surface(pygame.display.set_mode((pad_width, pad_height)))
     pygame.display.set_caption(TITLE_STR)
 
