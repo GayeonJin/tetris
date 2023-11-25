@@ -23,20 +23,11 @@ DOWN_SPEED = 20
 NEXT_BLOCK_WIDTH = 30*5
 
 def draw_score(score) :
-    font = pygame.font.Font('freesansbold.ttf', 20)
-    text_suf = font.render('Score : %d'%score, True, COLOR_BLACK)
-    text_rect = text_suf.get_rect()
-    text_rect.left = BOARD_XOFFSET
-    text_rect.top = 5
-    gctrl.surface.blit(text_suf, text_rect)
+    gctrl.draw_string("Score : " + str(score), BOARD_XOFFSET, 10, ALIGN_LEFT, 25, COLOR_BLACK)
 
 def draw_message(str) :
-    font = pygame.font.Font('freesansbold.ttf', 40)
-    text_suf = font.render(str, True, COLOR_BLACK)
-    text_rect = text_suf.get_rect()
-    text_rect.center = ((gctrl.width / 2), (gctrl.height / 2))
+    gctrl.draw_string(str, 0, 0, ALIGN_CENTER, 40, COLOR_BLACK)
 
-    gctrl.surface.blit(text_suf, text_rect)
     pygame.display.update()
     sleep(2)
 
@@ -198,23 +189,15 @@ def start_game() :
     # Clear gamepad
     gctrl.surface.fill(COLOR_WHITE)
 
-    font = pygame.font.Font('freesansbold.ttf', 20)
-    text_suf = font.render(TITLE_STR, True, COLOR_BLACK)
-    text_rect = text_suf.get_rect()
-    text_rect.center = ((gctrl.width / 2), (gctrl.height / 2))
-    gctrl.surface.blit(text_suf, text_rect)
+    gctrl.draw_string(TITLE_STR, 0, 0, ALIGN_CENTER, 60, COLOR_BLACK)
 
     help_str = ['r : run game',
                 't : test game',
                 'x : exit']
 
-    font1 = pygame.font.SysFont(None, 25)
     for i, help in enumerate(help_str) :
-        text_suf1 = font1.render(help, True, COLOR_BLUE)
-        text_rect1 = text_suf1.get_rect()
-        text_rect1.top = text_rect.bottom + 50 + i * 25
-        text_rect1.centerx = gctrl.width / 2
-        gctrl.surface.blit(text_suf1, text_rect1)
+        y_offset = 150 - i * 25
+        gctrl.draw_string(help, 0, y_offset, ALIGN_CENTER | ALIGN_BOTTOM, 25, COLOR_BLUE)
 
     while True :
         for event in pygame.event.get():
